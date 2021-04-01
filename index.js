@@ -4,7 +4,7 @@ const giphyConstructor = require('giphy-api');
 const url = process.env.PLUGIN_WEBHOOK;
 const channel = process.env.PLUGIN_CHANNEL;
 const success_template = process.env.PLUGIN_SUCCESS_TEMPLATE;
-const error_template = process.env.PLUGIN_ERROR_TEMPLATE;
+const failure_template = process.env.PLUGIN_FAILURE_TEMPLATE;
 const giphy_api_key = process.env.PLUGIN_GIPHY_API_KEY;
 
 if (!url) {
@@ -19,8 +19,8 @@ if (!success_template) {
     throw new Error("Missing success template setting.");
 }
 
-if (!error_template) {
-    throw new Error("Missing error template setting.");
+if (!failure_template) {
+    throw new Error("Missing failure template setting.");
 }
 
 if (!giphy_api_key) {
@@ -43,7 +43,7 @@ if (process.env.DRONE_BUILD_STATUS) {
     }, function (err, res) {
         (async () => {
           await webhook.send({
-            text: template,
+            text: buildStatus === "success" ? success_template : failure_template,
             attachments: [
                 {
                     image_url: res.data.image_url          
